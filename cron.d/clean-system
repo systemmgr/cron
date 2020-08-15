@@ -1,0 +1,2 @@
+# Clean System cron job
+5 4 * * * root rm -Rf /etc/cron*/0* /etc/cron*/dailyjobs >/dev/null 2>&1 ;/usr/local/bin/clean-system >/dev/null 2>&1
