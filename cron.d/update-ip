@@ -1,0 +1,2 @@
+# update the IP address
+*/5 * * * * root /usr/local/bin/update-ip >/dev/null 2>&1
