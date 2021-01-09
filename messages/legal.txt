@@ -11,7 +11,7 @@
 --------------------------------------------------------------
 
 Legal Messages
-Welcome to MYHOSTNAME!
+Welcome to MYSHORTHOSTNAME!
 Any activity done on this machine is logged and monitored at all times. Any
 unauthorized access by individuals without explicit permission are subject
 to having their activities recorded, monitored, and/or examined by any
