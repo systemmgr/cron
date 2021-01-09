@@ -23,8 +23,8 @@ Any questions should be directed to the System Administrator!!!!
 
 --------------------------------------------------------------
 
-           MY IP Adress is: MYHOSTIP
-           MY Hostname is: MYHOSTNAME
+           MY Hostname is:    MYHOSTNAME
+           MY IP Adress is:   MYHOSTIP
 
 --------------------------------------------------------------
 
