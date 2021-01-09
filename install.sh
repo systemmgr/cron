@@ -114,8 +114,8 @@ run_postinst() {
   replace /etc/casjaysdev/messages/legal.txt MYFULLHOSTNAME "$(hostname -f)"
   [ -f "$(command -v update-motd)" ] && printf "%s" "$(update-motd)" || printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
   cp_rf /etc/motd /etc/motd.net
-  cat /etc/casjaysdev/messages/legal.txt /etc/motd >/etc/issue
-  cat /etc/casjaysdev/messages/legal.txt /etc/motd.net >/etc/issue.net
+  cp_rf /etc/casjaysdev/messages/legal.txt >/etc/issue
+  cp_rf /etc/casjaysdev/messages/legal.txt >/etc/issue.net
 }
 
 execute \
