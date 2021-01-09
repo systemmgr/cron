@@ -1,0 +1,23 @@
+# travis-ci test 
+
+language: bash
+sudo: enabled
+
+jobs:
+  include:
+    - os: linux
+      dist: focal
+      before_install: sudo apt-get update
+      arch:
+        - amd64
+
+install:
+  - sudo bash -c "$(curl -LSs https://github.com/casjay-dotfiles/scripts/raw/master/install.sh)"
+  - systemmgr install installer
+  - systemmgr install cron
+  - cat /etc/issue /etc/motd
+
+notifications:
+  email:
+    on_failure: never
+    on_success: never
