@@ -102,16 +102,19 @@ failexitcode
 
 run_postinst() {
   systemmgr_run_postinst
-  mkd /etc/casjaysdev/messages
+  [ ! -d /etc/casjaysdev/messages ] && mkd /etc/casjaysdev/messages
   [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
   [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
+  printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
   rm_rf /etc/cron*/0*
   rm_rf /etc/cron*/anacron
   cp_rf $APPDIR/cron* /etc/
-  cp_rf $APPDIR/messages/legal.txt /etc/casjaysdev/messages/legal.txt
+  cp_rf /etc/motd /etc/motd.net
+  cp_rf $APPDIR/messages/* /etc/casjaysdev/messages/
   replace /etc/casjaysdev/messages/legal.txt MYHOSTIP "$CURRIP4"
-  replace /etc/casjaysdev/messages/legal.txt MYHOSTNAME $(hostname -s)
-  fortune | cowsay >/etc/motd.net && printf "\n\n" >>/etc/motd.net
+  replace /etc/casjaysdev/messages/legal.txt MYHOSTNAME "$(hostname -s)"
+  replace /etc/casjaysdev/messages/legal.txt MYFULLHOSTNAME "$(hostname -f)"
+  cat /etc/casjaysdev/messages/legal.txt /etc/motd >/etc/issue
   cat /etc/casjaysdev/messages/legal.txt /etc/motd.net >/etc/issue.net
 }
 
