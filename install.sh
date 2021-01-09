@@ -105,7 +105,7 @@ run_postinst() {
   [ ! -d /etc/casjaysdev/messages ] && mkd /etc/casjaysdev/messages
   [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
   [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
-  [ -f "$(command -v update-motd)" ] && printf "%s" "$(update-motd)" >/etc/motd || printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
+  [ -f "$(command -v update-motd)" ] && printf "%s" "$(update-motd)" || printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
   rm_rf /etc/cron*/0*
   rm_rf /etc/cron*/anacron
   cp_rf $APPDIR/cron* /etc/
