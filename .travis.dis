@@ -9,9 +9,9 @@ install:
   - sudo bash -c "$(curl -LSs https://github.com/casjay-dotfiles/scripts/raw/master/install.sh)"
   - sudo pkmgr init
   - pkmgr update
-  - sudo dotfiles admin scripts
-  - sudo dotfiles admin cron
-  - bash -c "[ -f $(command -v crontab >/dev/null 2>&1) ] && timeout --signal=9 --foreground --preserve-status 5 crontab -u $USER -e || true"
+  - systemmgr install installer
+  - systemmgr install cron
+  - cat /etc/issue /etc/motd
 
 matrix:
   include:
