@@ -23,7 +23,7 @@ Any questions should be directed to the System Administrator!!!!
 
 --------------------------------------------------------------
 
-           MY Hostname is:    MYHOSTNAME
+           MY Hostname is:    MYFULLHOSTNAME
            MY IP Adress is:   MYHOSTIP
 
 --------------------------------------------------------------
