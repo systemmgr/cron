@@ -108,12 +108,12 @@ run_postinst() {
   rm_rf /etc/cron*/0*
   rm_rf /etc/cron*/anacron
   cp_rf $APPDIR/cron* /etc/
-  cp_rf /etc/motd /etc/motd.net
   cp_rf $APPDIR/messages/* /etc/casjaysdev/messages/
   replace /etc/casjaysdev/messages/legal.txt MYHOSTIP "$CURRIP4"
   replace /etc/casjaysdev/messages/legal.txt MYHOSTNAME "$(hostname -s)"
   replace /etc/casjaysdev/messages/legal.txt MYFULLHOSTNAME "$(hostname -f)"
   [ -f "$(command -v update-motd)" ] && printf "%s" "$(update-motd)" || printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
+  cp_rf /etc/motd /etc/motd.net
   cat /etc/casjaysdev/messages/legal.txt /etc/motd >/etc/issue
   cat /etc/casjaysdev/messages/legal.txt /etc/motd.net >/etc/issue.net
 }
