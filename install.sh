@@ -103,24 +103,30 @@ failexitcode
 run_postinst() {
   systemmgr_run_postinst
   [ ! -d /etc/casjaysdev/messages ] && mkd /etc/casjaysdev/messages
+  [ ! -f /etc/casjaysdev/messages/legal.txt ] || rm_rf /etc/casjaysdev/messages/legal.txt
   [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
   [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
   rm_rf /etc/cron*/0*
   rm_rf /etc/cron*/anacron
   cp_rf $APPDIR/cron* /etc/
   cp_rf $APPDIR/messages/* /etc/casjaysdev/messages/
-  replace /etc/casjaysdev/messages/legal.txt MYHOSTIP "$CURRIP4"
-  replace /etc/casjaysdev/messages/legal.txt MYHOSTNAME "$(hostname -s)"
-  replace /etc/casjaysdev/messages/legal.txt MYFULLHOSTNAME "$(hostname -f)"
+  replace /etc/casjaysdev/messages/ MYHOSTIP "$CURRIP4"
+  replace /etc/casjaysdev/messages/ MYHOSTNAME "$(hostname -s)"
+  replace /etc/casjaysdev/messages/ MYFULLHOSTNAME "$(hostname -f)"
   if [ -f "$(command -v update-motd)" ]; then
     update-motd
   else
   if [ -f "$(command -v fortune)" ] && [ -f "$(command -v cowsay)" ]; then
     printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
   fi
-    cp_rf /etc/motd /etc/motd.net
-    cp_rf /etc/casjaysdev/messages/legal.txt >/etc/issue
-    cp_rf /etc/casjaysdev/messages/legal.txt >/etc/issue.net
+  messages_issue=$(ls "/etc/casjaysdev/messages/issue/" 2>/dev/null | wc -l)
+  if [ "$messages_issue" != "0" ]; then
+    cat /etc/casjaysdev/messages/issue/* | sudo tee -a /etc/issue >>/dev/null 2>&1
+  fi
+  messages_motd=$(ls "/etc/casjaysdev/messages/motd/" 2>/dev/null | wc -l)
+  if [ "$messages_motd" != "0" ]; then
+    cat /etc/casjaysdev/messages/motd/* | sudo tee -a /etc/motd >>/dev/null 2>&1
+  fi
   fi
 }
 
