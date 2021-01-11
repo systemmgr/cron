@@ -102,7 +102,6 @@ failexitcode
 
 run_postinst() {
   systemmgr_run_postinst
-  [ ! -d /etc/casjaysdev/messages ] && mkd /etc/casjaysdev/messages
   [ ! -f /etc/casjaysdev/messages/legal.txt ] || rm_rf /etc/casjaysdev/messages/legal.txt
   [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
   [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
@@ -110,6 +109,8 @@ run_postinst() {
   rm_rf /etc/cron*/anacron
   cp_rf $APPDIR/cron* /etc/
   cp_rf $APPDIR/messages/* /etc/casjaysdev/messages/
+  mkd /etc/casjaysdev/messages/motd 
+  mkd /etc/casjaysdev/messages/issue
   replace /etc/casjaysdev/messages/ MYHOSTIP "$CURRIP4"
   replace /etc/casjaysdev/messages/ MYHOSTNAME "$(hostname -s)"
   replace /etc/casjaysdev/messages/ MYFULLHOSTNAME "$(hostname -f)"
