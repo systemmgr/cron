@@ -1,4 +1,5 @@
 # CronTab config
+SHELL="${SHELL:-/usr/bin/env bash}"
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
 MAILTO=no-reply@$(hostname -s).casjay.in
 LOGDIR="${LOGDIR:-/usr/local/log}"
