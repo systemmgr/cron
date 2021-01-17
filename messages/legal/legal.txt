@@ -1,5 +1,4 @@
 
-
 --------------------------------------------------------------
   ____           _                 ____
  / ___|__ _ ___ (_) __ _ _   _ ___|  _ \  _____   __
@@ -11,7 +10,7 @@
 --------------------------------------------------------------
 
 Legal Messages
-Welcome to MYHOSTNAME!
+Welcome to MYFULLHOSTNAME!
 Any activity done on this machine is logged and monitored at all times. Any
 unauthorized access by individuals without explicit permission are subject
 to having their activities recorded, monitored, and/or examined by any
@@ -23,8 +22,7 @@ Any questions should be directed to the System Administrator!!!!
 
 --------------------------------------------------------------
 
-           MY Hostname is:    MYFULLHOSTNAME
+           MY Hostname is:    MYHOSTNAME
            MY IP Adress is:   MYHOSTIP
 
 --------------------------------------------------------------
-
