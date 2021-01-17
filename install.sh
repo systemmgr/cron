@@ -106,29 +106,38 @@ run_postinst() {
   [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
   [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
   [ -f /etc/anacrontab ] && ln_sf "$APPDIR/anacrontab" /etc/anacrontab
+
   rm_rf /etc/cron*/0*
   rm_rf /etc/cron*/anacron
+
   cp_rf $APPDIR/cron* /etc/
   cp_rf $APPDIR/messages/* /etc/casjaysdev/messages/
+
   mkd /etc/casjaysdev/messages/motd
   mkd /etc/casjaysdev/messages/issue
+
+  replace /etc/crontab '$(hostname -s)' "$(hostname -f)"
   replace /etc/casjaysdev/messages/ MYHOSTIP "$CURRIP4"
   replace /etc/casjaysdev/messages/ MYHOSTNAME "$(hostname -s)"
   replace /etc/casjaysdev/messages/ MYFULLHOSTNAME "$(hostname -f)"
+
   if [ -f "$(command -v update-motd)" ]; then
     update-motd
   else
     if [ -f "$(command -v fortune)" ] && [ -f "$(command -v cowsay)" ]; then
       printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
     fi
+
     messages_legal=$(ls "/etc/casjaysdev/messages/legal/" 2>/dev/null | wc -l)
     if [ "$messages_legal" != "0" ]; then
       cat /etc/casjaysdev/messages/legal/*.txt | sudo tee -a /etc/issue >>/dev/null 2>&1
     fi
+
     messages_issue=$(ls "/etc/casjaysdev/messages/issue/" 2>/dev/null | wc -l)
     if [ "$messages_issue" != "0" ]; then
       cat /etc/casjaysdev/messages/issue/*.txt | sudo tee -a /etc/issue >>/dev/null 2>&1
     fi
+
     messages_motd=$(ls "/etc/casjaysdev/messages/motd/" 2>/dev/null | wc -l)
     if [ "$messages_motd" != "0" ]; then
       cat /etc/casjaysdev/messages/motd/*.txt | sudo tee -a /etc/motd >>/dev/null 2>&1
