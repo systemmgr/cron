@@ -46,9 +46,10 @@ scripts_check
 # Defaults
 APPNAME="${APPNAME:-cron}"
 APPDIR="/usr/local/etc/$APPNAME"
+INSTDIR="${INSTDIR}"
 REPO="${SYSTEMMGRREPO:-https://github.com/systemmgr}/${APPNAME}"
 REPORAW="${REPORAW:-$REPO/raw}"
-APPVERSION="$(curl -LSs $REPORAW/master/version.txt)"
+APPVERSION="$(__appversion $REPORAW/master/version.txt)"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -64,6 +65,12 @@ show_optvars "$@"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# Requires root - no point in continuing
+
+sudoreq # sudo required
+#sudorun  # sudo optional
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # end with a space
 
 APP="crontab fortune cowsay "
@@ -105,16 +112,14 @@ run_postinst() {
   [ ! -f /etc/casjaysdev/messages/legal.txt ] || rm_rf /etc/casjaysdev/messages/legal.txt
   [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
   [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
-  [ -f /etc/anacrontab ] && ln_sf "$APPDIR/anacrontab" /etc/anacrontab
 
   rm_rf /etc/cron*/0*
   rm_rf /etc/cron*/anacron
 
-  cp_rf $APPDIR/cron* /etc/
-  cp_rf $APPDIR/messages/* /etc/casjaysdev/messages/
-
   mkd /etc/casjaysdev/messages/motd
   mkd /etc/casjaysdev/messages/issue
+
+  cp_rf "$APPDIR/." "/etc/"
 
   replace /etc/crontab '$(hostname -s)' "$(hostname -f)"
   replace /etc/casjaysdev/messages/ MYHOSTIP "$CURRIP4"
