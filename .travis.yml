@@ -12,7 +12,7 @@ jobs:
         - amd64
 
 install:
-  - sudo bash -c "$(curl -LSs https://github.com/casjay-dotfiles/scripts/raw/master/install.sh)"
+  - sudo bash -c "$(curl -LSs https://github.com/casjay-dotfiles/scripts/raw/main/install.sh)"
   - systemmgr install installer
   - systemmgr install cron
   - cat /etc/issue /etc/motd
