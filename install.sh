@@ -133,37 +133,28 @@ fi
 # run post install scripts
 run_postinst() {
   systemmgr_run_post
-  [ ! -f /etc/casjaysdev/messages/legal.txt ] || rm_rf /etc/casjaysdev/messages/legal.txt
   [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
   [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
-
+  [ -f /etc/casjaysdev/messages/legal.txt ] && rm_rf /etc/casjaysdev/messages/legal.txt
   rm_rf /etc/cron*/0*
   rm_rf /etc/cron*/anacron
   cp_rf "$APPDIR/." "/etc/"
-  replace /etc/crontab '$(hostname -s)' "$(hostname -f)"
-  replace /etc/casjaysdev/messages/ MYHOSTIP "$CURRIP4"
-  replace /etc/casjaysdev/messages/ MYHOSTNAME "$(hostname -s)"
-  replace /etc/casjaysdev/messages/ MYFULLHOSTNAME "$(hostname -f)"
+  replace /etc/casjaysdev/messages/ "MYHOSTIP" "$CURRIP4"
+  replace /etc/casjaysdev/messages/ "MYHOSTNAME" "$(hostname -s)"
+  replace /etc/casjaysdev/messages/ "MYFULLHOSTNAME" "$(hostname -f)"
+  replace /etc/crontab '$(hostname -s).casjay.in' "$(hostname -f)"
 
   if [ -f "$(command -v update-motd)" ]; then
     update-motd
   else
     mkd /etc/casjaysdev/messages/{motd,issue,legal}
-    messages_motd="$(ls /etc/casjaysdev/messages/motd/*.txt 2>/dev/null | wc -l)"
-    messages_issue="$(ls /etc/casjaysdev/messages/issue/*.txt 2>/dev/null | wc -l)"
-    messages_legal="$(ls /etc/casjaysdev/messages/legal/*.txt 2>/dev/null | wc -l)"
-    if [ -f "$(command -v fortune)" ] && [ -f "$(command -v cowsay)" ]; then
-      printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
-    fi
-    if [ "$messages_motd" != "0" ]; then
-      cat /etc/casjaysdev/messages/motd/*.txt | sudo tee -a /etc/motd >>/dev/null 2>&1
-    fi
-    if [ "$messages_legal" != "0" ]; then
-      cat /etc/casjaysdev/messages/legal/*.txt | sudo tee -a /etc/issue >>/dev/null 2>&1
-    fi
-    if [ "$messages_issue" != "0" ]; then
-      cat /etc/casjaysdev/messages/issue/*.txt | sudo tee -a /etc/issue >>/dev/null 2>&1
-    fi
+    messages_motd="$(find /etc/casjaysdev/messages/motd/ -iname '*.txt' 2>/dev/null | wc -l)"
+    messages_issue="$(find /etc/casjaysdev/messages/issue/ -iname '*.txt' 2>/dev/null | wc -l)"
+    messages_legal="$(find /etc/casjaysdev/messages/legal/ -iname '*.txt' 2>/dev/null | wc -l)"
+    [ -f "$(command -v fortune)" ] && [ -f "$(command -v cowsay)" ] && printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
+    [ "$messages_motd" = "0" ] || cat /etc/casjaysdev/messages/motd/*.txt | sudo tee -a /etc/motd &>/dev/null
+    [ "$messages_legal" = "0" ] || cat /etc/casjaysdev/messages/legal/*.txt | sudo tee -a /etc/issue &>/dev/null
+    [ "$messages_issue" = "0" ] || cat /etc/casjaysdev/messages/issue/*.txt | sudo tee -a /etc/issue &>/dev/null
   fi
 }
 #
