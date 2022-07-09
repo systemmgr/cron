@@ -156,7 +156,7 @@ run_postinst() {
     [ "$messages_legal" = "0" ] || cat /etc/casjaysdev/messages/legal/*.txt | sudo tee -a /etc/issue &>/dev/null
     [ "$messages_issue" = "0" ] || cat /etc/casjaysdev/messages/issue/*.txt | sudo tee -a /etc/issue &>/dev/null
   fi
-  systemctl enable --now chronie || systemctl enable --now chron || systemctl enable --now chrond || true
+  systemctl enable --now cronie || systemctl enable --now cron || systemctl enable --now crond || true
 }
 #
 execute "run_postinst" "Running post install scripts"
