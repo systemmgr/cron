@@ -135,9 +135,10 @@ run_postinst() {
   systemmgr_run_post
   [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
   [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
-  [ -f /etc/casjaysdev/messages/legal.txt ] && rm_rf /etc/casjaysdev/messages/legal.txt
+  [ -f "/etc/casjaysdev/messages/legal.txt" ] && rm_rf "/etc/casjaysdev/messages/legal.txt"
   rm_rf /etc/cron*/0*
-  rm_rf /etc/cron*/anacron
+  rm_rf /etc/cron*/*anacron*
+  rm_rf /etc/cron.*/.placeholder
   cp_rf "$APPDIR/." "/etc/"
   replace /etc/casjaysdev/messages/ "MYHOSTIP" "$CURRIP4"
   replace /etc/casjaysdev/messages/ "MYHOSTNAME" "$(hostname -s)"
@@ -148,9 +149,9 @@ run_postinst() {
     update-motd
   else
     mkd /etc/casjaysdev/messages/{motd,issue,legal}
-    messages_motd="$(find /etc/casjaysdev/messages/motd/ -iname '*.txt' 2>/dev/null | wc -l)"
-    messages_issue="$(find /etc/casjaysdev/messages/issue/ -iname '*.txt' 2>/dev/null | wc -l)"
-    messages_legal="$(find /etc/casjaysdev/messages/legal/ -iname '*.txt' 2>/dev/null | wc -l)"
+    messages_motd="$(find /etc/casjaysdev/messages/motd/ -iname '*.txt' 2>/dev/null | wc -l | grep '^' || echo '0')"
+    messages_issue="$(find /etc/casjaysdev/messages/issue/ -iname '*.txt' 2>/dev/null | wc -l | grep '^' || echo '0')"
+    messages_legal="$(find /etc/casjaysdev/messages/legal/ -iname '*.txt' 2>/dev/null | wc -l | grep '^' || echo '0')"
     [ -f "$(command -v fortune)" ] && [ -f "$(command -v cowsay)" ] && printf "%s\n\n" "$(fortune | cowsay)" >/etc/motd
     [ "$messages_motd" = "0" ] || cat /etc/casjaysdev/messages/motd/*.txt | sudo tee -a /etc/motd &>/dev/null
     [ "$messages_legal" = "0" ] || cat /etc/casjaysdev/messages/legal/*.txt | sudo tee -a /etc/issue &>/dev/null
