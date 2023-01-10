@@ -140,10 +140,10 @@ run_postinst() {
   rm_rf /etc/cron*/*anacron*
   rm_rf /etc/cron.*/.placeholder
   cp_rf "$APPDIR/." "/etc/"
-  replace /etc/casjaysdev/messages/ "MYHOSTIP" "$CURRIP4"
+  replace /etc/crontab 'MYFULLHOSTNAME' "$(hostname -f)"
   replace /etc/casjaysdev/messages/ "MYHOSTNAME" "$(hostname -s)"
   replace /etc/casjaysdev/messages/ "MYFULLHOSTNAME" "$(hostname -f)"
-  replace /etc/crontab '$(hostname -s).casjay.in' "$(hostname -f)"
+  replace /etc/casjaysdev/messages/ "MYHOSTIP" "$CURRENT_IP_4"
 
   if [ -f "$(command -v update-motd)" ]; then
     update-motd

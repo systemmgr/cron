@@ -1,3 +1,2 @@
-#Lets have fortune and cowsay create an issue file 30 minutes
-PATH=/usr/local/bin:/usr/bin:/bin:/usr/games:/usr/local/sbin:/usr/sbin:/sbin
+# Lets have fortune and cowsay create an issue file 30 minutes
 */15,45 * * * * root /usr/local/bin/update-motd 2>/dev/null 2>&1
