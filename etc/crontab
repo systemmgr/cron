@@ -1,9 +1,9 @@
 # CronTab config
 HOME="${HOME:-/}"
 PATH=/usr/local/bin:/usr/bin:/bin:/usr/games:/usr/local/sbin:/usr/sbin:/sbin
-SHELL="$(type -P bash || echo "$SHELL")"
+SHELL="$(type -P bash 2>/dev/null)"
 HOSTNAME="$(hostname -f)"
-LOGDIR="${LOGDIR:-/usr/local/log}"
+LOGDIR="${LOGDIR:-/var/log}"
 MAILTO=no-reply@MYFULLHOSTNAME
 
 # run-parts

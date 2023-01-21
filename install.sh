@@ -133,13 +133,13 @@ fi
 # run post install scripts
 run_postinst() {
   systemmgr_run_post
+  cp_rf "$APPDIR/." "/etc/"
   [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
   [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
   [ -f "/etc/casjaysdev/messages/legal.txt" ] && rm_rf "/etc/casjaysdev/messages/legal.txt"
   rm_rf /etc/cron*/0*
   rm_rf /etc/cron*/*anacron*
   rm_rf /etc/cron.*/.placeholder
-  cp_rf "$APPDIR/." "/etc/"
   replace /etc/crontab 'MYFULLHOSTNAME' "$(hostname -f)"
   replace /etc/casjaysdev/messages/ "MYHOSTNAME" "$(hostname -s)"
   replace /etc/casjaysdev/messages/ "MYFULLHOSTNAME" "$(hostname -f)"
