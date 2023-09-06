@@ -1,2 +1,2 @@
 # Lets have fortune and cowsay create an issue file 30 minutes
-*/15,45 * * * * root /usr/local/bin/update-motd 2>/dev/null 2>&1
+*/15,45 * * * * root /usr/local/bin/update-motd --raw >/dev/null 2>&1
