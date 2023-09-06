@@ -4,7 +4,7 @@ PATH=/usr/local/bin:/usr/bin:/bin:/usr/games:/usr/local/sbin:/usr/sbin:/sbin
 SHELL="$(type -P bash)"
 HOSTNAME="$(hostname -f)"
 LOGDIR="${LOGDIR:-/var/log}"
-MAILTO=no-reply@MYFULLHOSTNAME
+MAILTO=no-reply@$HOSTNAME
 
 # run-parts
 01 * * * * root run-parts /etc/cron.hourly

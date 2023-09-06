@@ -1,0 +1,2 @@
+# update the IP address
+*/5 * * * * root /usr/local/bin/systemmgr update scripts cron ssl >/var/log/systemmgr 2>&1
