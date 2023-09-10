@@ -1,2 +1,2 @@
 # Clean System cron job
-15 04 * * * root /usr/local/bin/clean-system --raw >/dev/null 2>&1
+15 04 * * * root /usr/local/share/CasjaysDev/scripts/bin//clean-system --raw >/dev/null 2>&1

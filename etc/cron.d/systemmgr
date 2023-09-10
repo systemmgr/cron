@@ -1,2 +1,2 @@
 # update the IP address
-*/5 * * * * root /usr/local/bin/systemmgr --raw update scripts cron ssl >/var/log/systemmgr 2>&1
+*/5 * * * * root /usr/local/share/CasjaysDev/scripts/bin/systemmgr --raw update scripts cron ssl >/var/log/systemmgr 2>&1
