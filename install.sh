@@ -230,7 +230,7 @@ __run_post_install() {
     [ "$messages_issue" = "0" ] || cat /etc/casjaysdev/messages/issue/*.txt | sudo tee -a /etc/issue &>/dev/null
   fi
   systemctl enable --now cronie || systemctl enable --now cron || systemctl enable --now crond || true
-  printf '# update scripts \n5 4 * * * root "%s/bin/systemmgr" update scripts cron ssl >/var/log/systemmgr\n' "$APPDIR" | sudo tee -p "/etc/cron.d/systemmgr" &>/dev/null
+  printf '# update scripts \n5 4 * * * root "%s" update scripts cron ssl >/var/log/systemmgr\n' "$(type -P systemmgr 2>/dev/null || echo 'false')" | sudo tee -p "/etc/cron.d/systemmgr" &>/dev/null
   return $getRunStatus
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
