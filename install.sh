@@ -26,7 +26,7 @@
 # shellcheck disable=SC2199
 # shellcheck disable=SC2317
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-APPNAME="systemmgr"
+APPNAME="cron"
 VERSION="202408101831-git"
 HOME="${USER_HOME:-$HOME}"
 USER="${SUDO_USER:-$USER}"
@@ -138,11 +138,10 @@ systemmgr_run_init
 #installer_noupdate "$@"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Defaults
-APPNAME="systemmgr"
 APPVERSION="$(__appversion "https://github.com/$SCRIPTS_PREFIX/$APPNAME/raw/$REPO_BRANCH/version.txt")"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define these if build script is used
-BUILD_NAME="systemmgr"
+BUILD_NAME="cron"
 BUILD_SCRIPT_REBUILD="false"
 BUILD_SRC_URL=""
 BUILD_SCRIPT_SRC_DIR="$PLUGIN_DIR/source"
@@ -154,7 +153,7 @@ PLUGIN_REPOS=""
 LATEST_RELEASE=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Specify global packages
-GLOBAL_OS_PACKAGES="systemmgr "
+GLOBAL_OS_PACKAGES="cron "
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define linux only packages
 LINUX_OS_PACKAGES=""
