@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-##@Version           :  202408101831-git
+##@Version           :  202408241123-git
 # @@Author           :  Jason Hempstead
 # @@Contact          :  jason@casjaysdev.pro
-# @@License          :  WTFPL
+# @@License          :  LICENSE.md
 # @@ReadME           :  install.sh --help
 # @@Copyright        :  Copyright: (c) 2024 Jason Hempstead, Casjays Developments
-# @@Created          :  Saturday, Aug 10, 2024 18:31 EDT
+# @@Created          :  Tuesday, Aug 27, 2024 17:58 EDT
 # @@File             :  install.sh
-# @@Description      :  Install configurations for systemmgr
+# @@Description      :  Install configurations for cron
 # @@Changelog        :  New script
 # @@TODO             :  Better documentation
 # @@Other            :
@@ -27,23 +27,20 @@
 # shellcheck disable=SC2317
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 APPNAME="cron"
-VERSION="202408101831-git"
-HOME="${USER_HOME:-$HOME}"
+VERSION="202408241123-git"
 USER="${SUDO_USER:-$USER}"
-RUN_USER="${SUDO_USER:-$USER}"
+RUN_USER="${RUN_USER:-$USER}"
+USER_HOME="${USER_HOME:-$HOME}"
 SCRIPT_SRC_DIR="${BASH_SOURCE%/*}"
 export SCRIPTS_PREFIX="systemmgr"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 REPO_BRANCH="${GIT_REPO_BRANCH:-main}"
-PLUGIN_DIR="$HOME/.local/share/$APPNAME/plugins"
 REPO="https://github.com/$SCRIPTS_PREFIX/$APPNAME"
-INSTDIR="$HOME/.local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
 REPORAW="https://github.com/$SCRIPTS_PREFIX/$APPNAME/raw/$REPO_BRANCH"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-APPDIR="$HOME/.config/$APPNAME"
-PLUGIN_DIR="$HOME/.local/share/$APPNAME/plugins"
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BUILD_NAME="$APPNAME"
+INSTDIR="/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
+APPDIR="/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
+PLUGIN_DIR="/usr/local/share/$SCRIPTS_PREFIX/$APPNAME/plugins"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Set bash options
 trap 'retVal=$?;trap_exit' ERR EXIT SIGINT
@@ -78,10 +75,11 @@ fi
 __am_i_online() { connect_test || return 1; }
 __run_git_clone_pull() { git_update "$1" "$2"; }
 __cmd_exists() { builtin type -P $1 &>/dev/null; }
-__mkdir() { mkdir -p "$1" &>/dev/null || return 1; }
+__mkdir() { mkdir -p "$@" &>/dev/null || return 1; }
 __app_is_running() { pidof "$1" &>/dev/null || return 1; }
 __mv_f() { [ -e "$1" ] && mv -f "$@" &>/dev/null || return 1; }
 __cp_rf() { [ -e "$1" ] && cp -Rfa "$@" &>/dev/null || return 1; }
+__ln() { [ -e "$1" ] && ln -sf "$1" "$2" &>/dev/null || return 1; }
 __chmod() { [ -e "$2" ] && chmod -Rf "$@" 2>/dev/null || return 1; }
 __replace_one() { $sed -i "s|$1|$2|g" "$3" &>/dev/null || return 1; }
 __rm_rf() { [ -e "$1" ] && { rm -Rf "$@" &>/dev/null || return 1; } || true; }
@@ -89,7 +87,8 @@ __rm_link() { [ -e "$1" ] && { rm -rf "$1" &>/dev/null || return 1; } || true; }
 __download_file() { curl -q -LSsf "$1" -o "$2" 2>/dev/null || return 1; }
 __input_is_number() { test -n "$1" && test -z "${1//[0-9]/}" || return 1; }
 __failexitcode() { [ $1 -ne 0 ] && printf_red "😠 $2 😠" && exit ${1:-4}; }
-__get_exit_status() { s=$? && getRunStatus=$((s + ${getRunStatus:-0})) && return $s; }
+__get_exit_status() { local s=$? && getRunStatus=$((s + ${getRunStatus:-0})) && return $s; }
+__service_exists() { systemctl list-unit-files | grep "^$1" || return 1; }
 __service_is_running() { systemctl is-active $1 2>&1 | grep -qiw 'active' || return 1; }
 __service_is_active() { systemctl is-enabled $1 2>&1 | grep -qiw 'enabled' || return 1; }
 __get_version() { echo "$@" | awk -F '.' '{ printf("%d%d%d%d\n", $1,$2,$3,$4) }'; }
@@ -101,8 +100,13 @@ __dir_count() { find -L "${1:-./}" -maxdepth "${2:-1}" -not -path "${1:-./}/.git
 __file_count() { find -L "${1:-./}" -maxdepth "${2:-1}" -not -path "${1:-./}/.git/*" -type f 2>/dev/null | wc -l; }
 __kill_process_id() { __input_is_number $1 && pid=$1 && { [ -z "$pid" ] || kill -15 $pid &>/dev/null; } || return 1; }
 __kill() { __kill_process_id "$1" || __kill_process_name "$1" || { ! __app_is_running "$1" || kill -9 $pid &>/dev/null; } || return 1; }
+__port_in_use() { netstat -tauln 2>&1 | grep ' LISTEN' | awk -F' ' '{print $4}' | awk -F':' '{print $NF}' | sort -u | grep -q "^$1$" || return 2; }
 __replace_all() { [ -n "$3" ] && [ -e "$3" ] && find "$3" -not -path "$3/.git/*" -type f -exec $sed -i "s|$1|$2|g" {} \; >/dev/null 2>&1 || return 1; }
 __kill_process_name() { local pid="$(pidof "$1" 2>/dev/null)" && { [ -z "$pid" ] || { kill -19 $pid &>/dev/null && ! __app_is_running "$1" && return 0; } || kill -9 $pid &>/dev/null; } || return 1; }
+__does_container_exist() { [ -n "$(command -v docker 2>/dev/null)" ] && docker ps -a | awk '{print $NF}' | grep -v '^NAMES$' | grep -q "$1" || return 1; }
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+__get_user_name() { grep ':' /etc/passwd | awk -F ':' '{print $1}' | sort -u | grep "^${1:-root}$" || return 1; }
+__get_user_group() { grep ':' /etc/group | awk -F ':' '{print $1}' | sort -u | grep "^${1:-root}$" || return 1; }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 sed="$(builtin type -P gsed 2>/dev/null || builtin type -P sed 2>/dev/null || return)"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,7 +124,7 @@ unsupported_oses
 sudorun "true"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Requires root - restarting with sudo
-sudoreq "$0 *"
+sudoreq "$0 $*"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Make sure the scripts repo is installed
 scripts_check
@@ -206,8 +210,8 @@ __run_prepost_install() {
 __run_post_install() {
   local getRunStatus=0
   cp_rf "$APPDIR/." "/etc/"
-  [ ! -f /usr/bin/cowsay ] && [ -f /usr/games/cowsay ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
-  [ ! -f /usr/bin/fortune ] && [ -f /usr/games/fortune ] && ln_sf /usr/games/fortune /usr/bin/fortune
+  [ ! -f "/usr/bin/cowsay" ] && [ -f "/usr/games/cowsay" ] && ln_sf /usr/games/cowsay /usr/bin/cowsay
+  [ ! -f "/usr/bin/fortune" ] && [ -f "/usr/games/fortune" ] && ln_sf /usr/games/fortune /usr/bin/fortune
   [ -f "/etc/casjaysdev/messages/legal.txt" ] && rm_rf "/etc/casjaysdev/messages/legal.txt"
   rm_rf /etc/cron*/0*
   rm_rf /etc/cron*/*anacron*
@@ -253,7 +257,7 @@ __run_build_script() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Other dependencies
 dotfilesreq misc
-dotfilesreqadmin cron
+dotfilesreqadmin
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # END OF CONFIGURATION
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -362,7 +366,7 @@ if __am_i_online; then
       else
         execute "git_clone $plugin $plugin_dir" "Installing plugin $plugin_name"
         exitCodeC=$?
-        [ $exitCodeC -ne 0 ] && exitCodeP=$((exitCodeC + exitCodeP)) && printf_red "Failed to install $plugin_name"
+        [ $exitCodeC -ne 0 ] && exitCodeP=$(($exitCodeC + exitCodeP)) && printf_red "Failed to install $plugin_name"
       fi
     done
   fi
