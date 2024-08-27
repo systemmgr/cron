@@ -223,7 +223,9 @@ __run_post_install() {
   if [ -f "$(command -v update-motd)" ]; then
     update-motd
   else
-    __mkdir /etc/casjaysdev/messages/{motd,issue,legal}
+    __mkdir /etc/casjaysdev/messages/motd
+    __mkdir /etc/casjaysdev/messages/legal
+    __mkdir /etc/casjaysdev/messages/issue
     messages_motd="$(find /etc/casjaysdev/messages/motd/ -iname '*.txt' 2>/dev/null | wc -l | grep '^' || echo '0')"
     messages_issue="$(find /etc/casjaysdev/messages/issue/ -iname '*.txt' 2>/dev/null | wc -l | grep '^' || echo '0')"
     messages_legal="$(find /etc/casjaysdev/messages/legal/ -iname '*.txt' 2>/dev/null | wc -l | grep '^' || echo '0')"
