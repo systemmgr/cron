@@ -209,13 +209,13 @@ __run_prepost_install() {
 # run after primary post install function
 __run_post_install() {
   local getRunStatus=0
-  __cp_rf "$APPDIR/." "/etc/"
   [ ! -f "/usr/bin/cowsay" ] && [ -f "/usr/games/cowsay" ] && __ln /usr/games/cowsay /usr/bin/cowsay
   [ ! -f "/usr/bin/fortune" ] && [ -f "/usr/games/fortune" ] && __ln /usr/games/fortune /usr/bin/fortune
   [ -f "/etc/casjaysdev/messages/legal.txt" ] && __rm_rf "/etc/casjaysdev/messages/legal.txt"
   __rm_rf /etc/cron*/0*
   __rm_rf /etc/cron*/*anacron*
   __rm_rf /etc/cron.*/.placeholder
+  __cp_rf "$APPDIR/etc/." "/etc/"
   __replace_one /etc/crontab 'MYFULLHOSTNAME' "$(hostname -f)"
   __replace_one /etc/casjaysdev/messages/ "MYHOSTNAME" "$(hostname -s)"
   __replace_one /etc/casjaysdev/messages/ "MYFULLHOSTNAME" "$(hostname -f)"
