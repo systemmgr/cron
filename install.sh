@@ -214,6 +214,7 @@ __run_post_install() {
   [ -f "/etc/casjaysdev/messages/legal.txt" ] && __rm_rf "/etc/casjaysdev/messages/legal.txt"
   __rm_rf /etc/cron*/0*
   __rm_rf /etc/cron*/*anacron*
+  __rm_rf /etc/cron.*/.gitkeep
   __rm_rf /etc/cron.*/.placeholder
   __cp_rf "$APPDIR/etc/." "/etc/"
   __replace_one /etc/crontab 'MYFULLHOSTNAME' "$(hostname -f)"
