@@ -217,10 +217,12 @@ __run_post_install() {
   __rm_rf /etc/cron.*/.gitkeep
   __rm_rf /etc/cron.*/.placeholder
   __cp_rf "$APPDIR/etc/." "/etc/"
-  __replace_one /etc/crontab 'MYFULLHOSTNAME' "$(hostname -f)"
-  __replace_one /etc/casjaysdev/messages/ "MYHOSTNAME" "$(hostname -s)"
-  __replace_one /etc/casjaysdev/messages/ "MYFULLHOSTNAME" "$(hostname -f)"
-  __replace_one /etc/casjaysdev/messages/ "MYHOSTIP" "$CURRENT_IP_4"
+  __replace_one /etc/casjaysdev/messages/ "MYHOSTIP_4" "$CURRENT_IP_4"
+  __replace_one /etc/casjaysdev/messages/ "MYHOSTIP_6" "$CURRENT_IP_6"
+  __replace_one /etc/casjaysdev/messages/ "KERNEL_VERSION" "$(uname -r)"
+  __replace_one /etc/crontab "MY_FULL_HOSTNAME" "$(hostname -f 2>/dev/null)"
+  __replace_one /etc/casjaysdev/messages/ "MY_FULL_HOSTNAME" "$(hostname -f 2>/dev/null)"
+  __replace_one /etc/casjaysdev/messages/ "MY_SHORT_HOSTNAME" "$(hostname -s 2>/dev/null)"
   if [ -f "$(command -v update-motd)" ]; then
     update-motd
   else
